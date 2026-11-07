@@ -1,0 +1,16 @@
+{
+  "name": "sakura-arms-helper",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-05-28",
+  "assets": {
+    "directory": "./public",
+    "run_worker_first": ["/api/*"]
+  },
+  "rules": [{ "type": "Text", "globs": ["**/*.md"], "fallthrough": true }],
+  "ratelimits": [{ "name": "CHAT_LIMIT", "namespace_id": "1131", "simple": { "limit": 8, "period": 60 } }],
+  "ai": { "binding": "AI" },
+  // read only: the DeepSeek status that the Pittsburgh site (brass-pittsburgh-room) checks every hour; the free plan has no cron left
+  "kv_namespaces": [{ "binding": "CHAT_STATE", "id": "5e1ea4107dc24ef290c1dd3cd76045e1" }],
+  "observability": { "enabled": true },
+  "routes": [{ "pattern": "sakura.leisurecat.cloud", "custom_domain": true }]
+}

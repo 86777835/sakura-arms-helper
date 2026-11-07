@@ -1,0 +1,24 @@
+/* 规则助手悬浮窗 */
+.cfab{position:fixed;right:16px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:20;background:var(--plum);color:#fbe7ec;border:1px solid var(--beni2);border-radius:24px;box-shadow:0 3px 12px #0003;font-weight:600}
+.cpanel{position:fixed;bottom:14px;right:14px;z-index:40;width:min(410px,calc(100vw - 28px));height:min(620px,calc(100dvh - 30px));display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 45px #0005;overflow:hidden}
+.chd{display:flex;align-items:center;padding:12px 14px;gap:10px;background:var(--plum);color:#fbe7ec}
+.chd>div{flex:1}.chd b{font-family:var(--serif)}.chd span{display:block;font-size:11px;opacity:.85}
+.cx{background:none;color:#fff;border:0;font-size:26px;min-width:40px}
+.cav{background:#fff;border-radius:50%;width:34px;height:34px;object-fit:contain;padding:3px;flex-shrink:0}
+.band{height:3px;background:linear-gradient(90deg,var(--beni),var(--sakura),var(--b))}
+.clog{flex:1;overflow:auto;padding:14px}
+.cwel{display:flex;gap:10px;align-items:center}.cwel img{width:48px;height:72px;object-fit:cover;border-radius:6px}.cwel span{display:block;font-size:12px;color:var(--muted)}
+.csug{display:flex;flex-direction:column;gap:8px;margin:18px 0}.csug em{font-size:12px;color:var(--muted);font-style:normal}
+.csug button{font-size:13px;text-align:left;justify-content:flex-start;min-height:40px}
+.cin{display:flex;padding:10px;gap:8px;border-top:1px solid var(--line)}
+.cin textarea{min-height:44px;height:46px}
+.cin button{background:var(--beni);border-color:var(--beni);color:#fff;min-width:46px}
+.cfoot{font-size:11px;text-align:center;padding:0 10px 10px;color:var(--muted)}
+.cr{display:flex;gap:8px;margin:14px 0}.cr.u{justify-content:flex-end}
+.cm{font-size:14px;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid var(--line);overflow-wrap:anywhere;max-width:85%}
+.cm.u{background:var(--blush);border-color:var(--sakura)}.cm.err{color:#a02d24}
+.sm{width:28px;height:28px}
+.cdots{display:inline-flex;gap:4px}.cdots b{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:cd 1s infinite}
+.cdots b:nth-child(2){animation-delay:.2s}.cdots b:nth-child(3){animation-delay:.4s}
+@keyframes cd{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.cdots b{animation:none}}
