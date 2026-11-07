@@ -43,7 +43,7 @@
   - 读取匹兹堡站 KV 里的 DeepSeek 状态，不建 cron。
   - 不显示模型名。
 - `public/img/`：官方素材包「新幕ふるよにコモンズ」的卡图和塔罗牌，已缩小并转成 WebP。来源和条款见 `docs/素材来源.md`。
-- 评价卡：首页底部，提交到总入口 `/api/reviews`，game 为 `sakura-arms`。room 用这台设备的随机码（单机站没有房间）。**总入口的 `games.json` 加上 `sakura-arms` 之后才能提交成功**，在此之前会显示“评价格式不对”。
+- 评价卡：首页底部，提交到总入口 `/api/reviews`，game 为 `sakura-arms`。room 用这台设备的随机码（单机站没有房间）。总入口已加上 `sakura-arms`（2026-11-07）。
 - `wrangler.jsonc`：rate limit `namespace_id` 用 1131，KV 绑定匹兹堡站的命名空间（只读），route 为 `sakura.leisurecat.cloud`（custom domain），没有 cron。
 
 ## 本地运行与测试
