@@ -205,12 +205,15 @@ function deckBody(sels, picked, opp = []) {
     ${setupBlock(sels, opp)}`;
 }
 
+// 定先手用总入口的手指轮盘 / 抽签，点「返回」回到这里
+const orderUrl = () => `https://boardgame.leisurecat.cloud/?order=2&back=${encodeURIComponent(location.href)}`;
+
 function setupBlock(sels, opp) {
   const mine = sels.flatMap((s) => setupFor(s).map((t) => ({ who: label(s), ...t })));
   const theirs = opp.length === 2 ? opp.flatMap((s) => setupFor(s).map((t) => ({ who: label(s), ...t }))) : [];
   const li = (t) => `<li><b>${esc(t.who)}</b>：${esc(t.text)}<small>${esc(t.source)}</small></li>`;
   return `<section class="card setup"><h2>开局清单</h2>
-    <ol class="common">${SETUP_COMMON.map((t) => `<li>${esc(t.text)}<small>${esc(t.source)}</small></li>`).join('')}</ol>
+    <ol class="common">${SETUP_COMMON.map((t) => `<li>${esc(t.text)}${t.order ? ` <a class="order-link" href="${orderUrl()}">手指轮盘定先手 ›</a>` : ''}<small>${esc(t.source)}</small></li>`).join('')}</ol>
     <h3>你这两柱要额外准备</h3>${mine.length ? `<ul>${mine.map(li).join('')}</ul>` : '<p class="note">没有额外组件。</p>'}
     ${opp.length === 2 ? `<h3>对手那两柱要准备</h3>${theirs.length ? `<ul>${theirs.map(li).join('')}</ul>` : '<p class="note">没有额外组件。</p>'}` : ''}
   </section>`;
