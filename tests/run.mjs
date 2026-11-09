@@ -1,7 +1,7 @@
 // 串行跑全部测试，结果写进 tests/测试结果.md。需要先在另一个终端运行 wrangler dev --port 8931。
 import { spawnSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
-const tests = ['test_logic', 'test_assets', 'test_flow', 'test_rules_ui', 'test_chat_ui'];
+const tests = ['test_logic', 'test_assets', 'test_flow', 'test_rules_ui', 'test_rec', 'test_chat_ui'];
 const results = [];
 for (const name of tests) {
   const r = spawnSync(process.execPath, [`tests/${name}.mjs`], { encoding: 'utf8', timeout: 240000 });

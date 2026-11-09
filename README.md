@@ -15,7 +15,8 @@
   - 效果是本站自己概括的一句话。
   - 点开详情可以看官方素材包里的卡图。
   - 不发布官方卡面文字。
-- 不做：在线对战、出牌结算、卡图墙、卡组广场、收藏管理、再演和古典战。
+- 推荐卡组（2026-11-09 加）：84 套有出处的卡组，按女神筛选，一键导入构筑或存进我的卡组。强度一律写“无数据”，只列来源本身有的大会成绩和文章热度。收录规则见 `docs/推荐卡组来源.md`。
+- 不做：在线对战、出牌结算、卡图墙、玩家投稿的卡组广场、收藏管理、再演和古典战。
 
 ## 功能与文件
 
@@ -34,6 +35,8 @@
   - 追加牌跟着来源牌走，TransForm 牌按编号替换。
   - 组合禁止：本体绯弥香 + 本体虚路时禁用「真红凶弹」。
   - 7+3 校验和分享码。
+- `public/decks.js`：推荐卡组，由 `tools/build_decks.mjs` 从 `tools/decks.json` 校验生成，不要手改。
+  - `#/rec` 是推荐卡组页。构筑页在当前两柱有推荐时，显示入口按钮。
 - `public/setup.js`：开局清单。通用 7 步，以及 18 柱女神各自的额外组件，每条标出处。
 - `public/data.js`：由 `tools/build_data.mjs` 生成，不要手改。
 - `public/guide.html`：由 `tools/build_pages.mjs` 从 `tools/讲解稿.md`（14 节）和 `tools/faq.json`（43 条）生成。
@@ -49,7 +52,7 @@
 ## 本地运行与测试
 
 ```sh
-ln -s /tmp/claude-501/pgh2/node_modules node_modules   # 需要 playwright-core；/tmp 被清掉时，新建目录 npm i playwright-core
+ln -s /tmp/claude-501/pw/node_modules node_modules   # 需要 playwright-core；/tmp 被清掉时，新建目录 npm i playwright-core
 wrangler dev --port 8931
 # 另一个终端：
 node tests/run.mjs
@@ -57,11 +60,12 @@ node tests/run.mjs
 rm node_modules
 ```
 
-`tests/run.mjs` 依次跑 5 个测试，结果写进 `tests/测试结果.md`：
+`tests/run.mjs` 依次跑 6 个测试，结果写进 `tests/测试结果.md`：
 - `test_logic`：牌池、异相、共用卡、禁止卡、7+3、分享码。
 - `test_assets`：358 个文件都能访问，没有多余的卡图。
 - `test_flow`：主流程。
 - `test_rules_ui`：三拾一捨、禁止卡、「合奏」、盒子筛选、对手速查、教程页、320px 窄屏。
+- `test_rec`：推荐卡组数据合法、有出处、没有自编指标；筛选、展开、导入构筑、存卡组、构筑页入口、窄屏。
 - `test_chat_ui`：没有密钥时给出明确报错，不显示模型名。
 
 说明：

@@ -2,6 +2,7 @@
 import { MEGAMI, CARDS } from './data.js';
 import { BOXES, TYPE_NAMES, NORMAL, SPECIAL, bansFor, variant, label, pool, checkPair, deckPool, checkDeck, encodeDeck, decodeDeck, stats } from './logic.js';
 import { SETUP_COMMON, setupFor } from './setup.js';
+import { DECKS } from './decks.js';
 import { morph, esc } from './dom.js';
 
 const $ = (s) => document.querySelector(s);
@@ -27,6 +28,7 @@ const ui = {
   extrasOpen: false,
   review: { stars: 5, text: '', name: store.get('name', ''), sent: false },
   shared: null,         // 打开别人分享的牌组
+  rec: { keys: [], open: null, from: '' },   // 推荐卡组：按女神筛选、展开的卡组、从哪一页进来
   busy: false,
 };
 const saveDraft = () => store.set('draft', { mine: ui.mine, opp: ui.opp, picked: ui.picked, three: ui.three, reg: ui.reg, cut: ui.cut });
@@ -101,6 +103,7 @@ function home() {
     ${has ? `<button class="ghost wide" data-act="resume">继续上次：${ui.mine.length === 2 ? esc(ui.mine.map(label).join(' + ')) : '还在选女神'}</button>` : ''}
   </section>
   <nav class="tiles">
+    <button class="wide-tile" data-act="rec-home"><b>推荐卡组</b><span>${DECKS.length} 套，来自网上攻略、玩家投稿和大会，逐套注明出处</span></button>
     <button data-act="go" data-to="oppo"><b>对手速查</b><span>只看对手那 22 张牌</span></button>
     <button data-act="go" data-to="decks"><b>我的卡组</b><span>${ui.decks.length ? `已存 ${ui.decks.length} 副` : '存好的牌组都在这'}</span></button>
     <a href="/guide.html"><b>规则教程</b><span>新手 10 分钟看懂</span></a>
@@ -184,6 +187,7 @@ function buildView() {
   return `${header('眼前构筑', ui.opp.length ? 'opp' : 'opp')}${steps(3)}
   <div class="counter"><span class="${n === NORMAL ? 'ok' : ''}">通常牌 <b>${n}</b>/${NORMAL}</span><span class="${s === SPECIAL ? 'ok' : ''}">王牌 <b>${s}</b>/${SPECIAL}</span>
     ${ui.opp.length === 2 ? `<button class="small soft" data-act="go" data-to="oppo">对手的牌</button>` : ''}</div>
+  ${recBanner(ui.mine)}
   <p class="note pad">${esc(ui.mine.map(label).join(' + '))}：从 ${p.normal.length} 张通常牌里选 7 张，${p.special.length} 张王牌里选 3 张，可以全选同一位女神的牌。组好的牌不用给对手看。${p.normal.length === 13 ? '「合奏」两位共用，只有 1 张，所以通常牌是 13 张。' : ''}</p>
   <h3 class="sec">通常牌</h3><div class="list">${p.normal.map(row).join('')}</div>
   <h3 class="sec">王牌</h3><div class="list">${p.special.map(row).join('')}</div>
@@ -274,6 +278,52 @@ function oppoView() {
   ${extrasBlock(p.extra, sels)}`;
 }
 
+// ---------- 推荐卡组 ----------
+const KIND = { official: ['官方', '官方样例牌组'], tournament: ['大会', '大会上位卡组'], guide: ['攻略', '攻略作者推荐'], community: ['投稿', '玩家投稿'] };
+const hasKeys = (d, keys) => keys.every((k) => d.sels.some((s) => s.key === k));
+const recBanner = (sels) => {
+  const keys = sels.map((s) => s.key), n = DECKS.filter((d) => hasKeys(d, keys)).length;
+  return n ? `<button class="recbar" data-act="rec-pair">${esc(keys.map((k) => MEGAMI.find((m) => m.key === k).name).join('、'))}的推荐卡组有 ${n} 套 ›</button>` : '';
+};
+
+function recCard(d) {
+  const open = ui.rec.open === d.id, fmt = (n) => n.toLocaleString('zh-CN');
+  const facts = [d.result ? `成绩：${esc(d.result.text)}` : '', d.heat ? `出处热度：浏览 ${fmt(d.heat.views)}、收藏 ${fmt(d.heat.favs)}` : ''].filter(Boolean);
+  return `<article class="rec ${open ? 'open' : ''}" data-k="rec-${d.id}">
+    <button class="rec-hit" data-act="rec-open" data-id="${d.id}" aria-expanded="${open}">
+      <span class="rec-top"><b>${esc(d.sels.map(label).join(' + '))}</b><i class="kind k-${d.kind}">${KIND[d.kind][0]}</i></span>
+      <span class="rec-sub">${d.title ? `「${esc(d.title)}」 · ` : ''}${esc(d.author)} · ${d.season === 'S10-2' ? esc(d.date) : `${esc(d.season)} 年规则书`}</span>
+      <span class="rec-metric">强度：无数据${facts.length ? ' · ' + facts.join(' · ') : ''}</span>
+    </button>
+    ${open ? `<div class="rec-body">
+      <p class="rec-note">${esc(d.note)}</p>
+      ${d.season !== 'S10-2' ? (() => { const ch = d.ids.filter((id) => CARDS[id].updated); return `<p class="warn">这是 ${esc(d.season)} 年的构筑，不代表最终版 S10-2 环境下的强度。${ch.length ? `卡单里之后改过的牌：${ch.map((id) => `「${esc(CARDS[id].name)}」（${esc(CARDS[id].updated)}）`).join('')}，效果以本站写的最终版为准。` : ''}</p>`; })() : ''}
+      <div class="list">${d.ids.map((id) => cardRow(id, { sels: d.sels })).join('')}</div>
+      <div class="two"><button class="primary" data-act="rec-use" data-id="${d.id}">用这副牌组牌</button><button data-act="rec-save" data-id="${d.id}">存进我的卡组</button></div>
+      <ul class="rec-src">
+        <li>来源类型：${KIND[d.kind][1]}</li>
+        <li>出处：<a href="${esc(d.source.url)}" target="_blank" rel="noopener">${esc(d.source.name)} ↗</a></li>
+        ${(d.also || []).map((a) => `<li>同样的卡单也见于：<a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.name)} ↗</a></li>`).join('')}
+        ${d.result ? `<li>成绩出处：<a href="${esc(d.result.url)}" target="_blank" rel="noopener">${esc(d.result.text)} ↗</a></li>` : ''}
+        ${d.heat ? `<li>出处热度是整篇文章的浏览、点赞（${fmt(d.heat.likes)}）和收藏数，${esc(d.heat.at)} 读取，一篇文章里有好几套卡组，不代表这套的强度。</li>` : ''}
+        <li>卡组按新幕最终版 S10-2 的卡池和禁止卡校验过，是合法的 7+3；打法要点是本站根据来源概括的。</li>
+      </ul>
+    </div>` : ''}
+  </article>`;
+}
+
+function recView() {
+  const keys = ui.rec.keys, list = DECKS.filter((d) => hasKeys(d, keys));
+  const count = (k) => DECKS.filter((d) => hasKeys(d, [k])).length;
+  return `${header('推荐卡组', ui.rec.from)}
+  <p class="note pad">${DECKS.length} 套卡组：官方入门样例 ${DECKS.filter((d) => d.kind === 'official').length} 套，其余都是新幕 S10-2 时期网上公开的大会卡组、攻略和玩家投稿，每套注明出处。来源里没有卡组的胜率或使用率，所以强度一律写“无数据”，只列出来源本身有的信息：大会成绩、文章热度。</p>
+  <div class="chips pad recchips">${MEGAMI.filter((m) => count(m.key)).map((m) => `<button class="chip" data-act="rec-key" data-key="${m.key}" aria-pressed="${keys.includes(m.key)}">${esc(m.name)} <small>${count(m.key)}</small></button>`).join('')}
+    ${keys.length ? '<button class="chip clear" data-act="rec-clear">清空</button>' : ''}</div>
+  <p class="note pad">${keys.length ? `含${esc(keys.map((k) => MEGAMI.find((m) => m.key === k).name).join('和'))}的卡组 ${list.length} 套` : '点女神名筛选，最多选两位'}</p>
+  <div class="recs">${list.map(recCard).join('') || `<p class="empty">这两位女神的组合还没有收录卡组。</p>`}</div>
+  ${credits()}`;
+}
+
 // ---------- 渲染 ----------
 function view() {
   const r = route();
@@ -281,7 +331,7 @@ function view() {
     try { ui.shared = decodeDeck(decodeURIComponent(r.slice(2))); } catch (e) { return `${header('分享链接', '')}<p class="empty">${esc(e.message)}，请让对方重新复制链接。</p>`; }
     return sharedView();
   }
-  return { pick: pickView, opp: oppView, build: buildView, done: doneView, decks: decksView, oppo: oppoView }[r]?.() ?? home();
+  return { pick: pickView, opp: oppView, build: buildView, done: doneView, decks: decksView, oppo: oppoView, rec: recView }[r]?.() ?? home();
 }
 function render() {
   const t = document.createElement('div');
@@ -362,6 +412,26 @@ async function act(b) {
   } else if (a === 'quick-go') ui.quickDone = true;
   else if (a === 'quick-reset') { ui.quick = []; ui.quickDone = false; ui.quickPick = true; ui.filter = 'all'; }
   else if (a === 'filter') ui.filter = b.dataset.f;
+  else if (a === 'rec-home') { ui.rec = { keys: [], open: null, from: '' }; return go('rec'); }
+  else if (a === 'rec-pair') { ui.rec = { keys: ui.mine.map((s) => s.key), open: null, from: 'build' }; return go('rec'); }
+  else if (a === 'rec-key') {
+    const k = b.dataset.key, keys = ui.rec.keys;
+    if (keys.includes(k)) keys.splice(keys.indexOf(k), 1);
+    else if (keys.length >= 2) { notify('最多选两位女神，先点掉一位'); return; }
+    else keys.push(k);
+    ui.rec.open = null;
+  } else if (a === 'rec-clear') { ui.rec.keys = []; ui.rec.open = null; }
+  else if (a === 'rec-open') ui.rec.open = ui.rec.open === b.dataset.id ? null : b.dataset.id;
+  else if (a === 'rec-use') {
+    const d = DECKS.find((x) => x.id === b.dataset.id);
+    if (ui.picked.length && !confirm('会替换你正在组的牌，继续吗？')) return;
+    ui.mine = d.sels.map((s) => ({ ...s })); ui.picked = [...d.ids]; ui.three = false; ui.reg = []; ui.cut = null;
+    ui.savedId = null; ui.deckName = d.title || ''; saveDraft(); notify('已载入，可以接着改'); return go('build');
+  } else if (a === 'rec-save') {
+    const d = DECKS.find((x) => x.id === b.dataset.id);
+    ui.decks = [{ id: Date.now().toString(36), name: d.title || d.sels.map(label).join(' + '), sels: d.sels.map((s) => ({ ...s })), picked: [...d.ids], at: Date.now() }, ...ui.decks];
+    store.set('decks', ui.decks); notify('已存进我的卡组');
+  }
   else if (a === 'star') ui.review.stars = Number(b.dataset.v);
   else if (a === 'review') return review();
   render();
