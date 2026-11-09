@@ -198,3 +198,6 @@ body.has-chat .dock{padding-right:96px}
 .slot.reg{background:var(--plum2);border-color:var(--plum2)}
 .slot.cut{background:#cbbcbf;border-color:#cbbcbf;text-decoration:line-through}
 .cutbox{margin-top:4px}
+/* 写评价: opens this game's review form on the hub, then 返回 comes back here */
+.hero{position:relative}
+.rate-nav{position:absolute;top:calc(env(safe-area-inset-top) + 8px);right:12px;display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border:1px solid rgba(90,43,64,.3);border-radius:18px;color:var(--plum2);font-size:13px;font-weight:600;text-decoration:none}

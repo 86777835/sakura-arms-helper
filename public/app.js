@@ -93,6 +93,7 @@ const header = (title, back = '') => `<header class="bar"><button class="back" d
 function home() {
   const has = ui.mine.length || ui.picked.length;
   return `<section class="hero">
+    <a class="rate-nav" href="https://boardgame.leisurecat.cloud/?rate=sakura-arms&back=${encodeURIComponent(location.href)}">★ 写评价</a>
     <p class="kicker">桜降る代に決闘を · 新幕</p>
     <h1>散樱乱武<span>组牌助手</span></h1>
     <p class="lead">新幕中文版 18 柱女神。选女神、7+3 组牌、对手卡牌速查、开局清单，都在一台手机上。</p>
