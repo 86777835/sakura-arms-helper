@@ -92,22 +92,49 @@ const steps = (n) => `<ol class="steps">${['我的女神', '对手女神', '构�
 const header = (title, back = '') => `<header class="bar"><button class="back" data-act="go" data-to="${back}" aria-label="返回">‹</button><h1>${title}</h1></header>`;
 
 // ---------- 首页 ----------
+// 首页立绘：正在组牌就用自己选的两柱，否则每次打开随机两位
+const heroPair = () => {
+  const keys = ui.mine.length === 2 ? ui.mine.map((s) => s.key) : [];
+  if (!keys.length) {
+    const all = MEGAMI.map((m) => m.key);
+    while (keys.length < 2) { const k = all[Math.floor(Math.random() * all.length)]; if (!keys.includes(k)) keys.push(k); }
+  }
+  return keys;
+};
+let HERO = null;
+const PETALS = Array.from({ length: 12 }, (_, i) => `<i style="--x:${(i * 37) % 100}%;--d:${7 + (i * 5) % 7}s;--t:-${(i * 13) % 11}s;--s:${0.6 + ((i * 7) % 5) / 10}"></i>`).join('');
+
 function home() {
   const has = ui.mine.length || ui.picked.length;
+  HERO ||= heroPair();
+  const name = (k) => MEGAMI.find((m) => m.key === k).name;
   return `<section class="hero">
+    <div class="petals" aria-hidden="true">${PETALS}</div>
     <a class="rate-nav" href="https://boardgame.leisurecat.cloud/?rate=sakura-arms&back=${encodeURIComponent(location.href)}">★ 写评价</a>
-    <p class="kicker">桜降る代に決闘を · 新幕</p>
-    <h1>散樱乱武<span>组牌助手</span></h1>
-    <p class="lead">新幕中文版 18 柱女神。选女神、7+3 组牌、对手卡牌速查、开局清单，都在一台手机上。</p>
+    <div class="hero-art" aria-hidden="true">
+      <img class="girl back" src="/img/megami/${HERO[1]}.webp" alt="">
+      <img class="girl front" src="/img/megami/${HERO[0]}.webp" alt="">
+    </div>
+    <div class="hero-title">
+      <p class="kicker">桜降る代に決闘を・新幕</p>
+      <h1>散樱乱武</h1>
+      <span class="seal">组牌<br>助手</span>
+    </div>
+    <p class="hero-who">今日立绘：${esc(name(HERO[0]))}、${esc(name(HERO[1]))}</p>
+  </section>
+  <section class="hero-cta">
+    <p class="lead">新幕中文版 18 柱女神。选两位女神，从 22 张里组出 7+3，开打前看看对手的牌。</p>
     <button class="primary big" data-act="start">${has ? '重新组一副' : '开始组牌'}</button>
     ${has ? `<button class="ghost wide" data-act="resume">继续上次：${ui.mine.length === 2 ? esc(ui.mine.map(label).join(' + ')) : '还在选女神'}</button>` : ''}
   </section>
   <nav class="tiles">
-    <button class="wide-tile" data-act="rec-home"><b>推荐卡组</b><span>${DECKS.length} 套，来自网上攻略、玩家投稿和大会，逐套注明出处</span></button>
-    <button data-act="go" data-to="oppo"><b>对手速查</b><span>只看对手那 22 张牌</span></button>
-    <button data-act="go" data-to="decks"><b>我的卡组</b><span>${ui.decks.length ? `已存 ${ui.decks.length} 副` : '存好的牌组都在这'}</span></button>
-    <a href="/guide.html"><b>规则教程</b><span>新手 10 分钟看懂</span></a>
-    <a href="/guide.html#faq"><b>常见问题</b><span>线下容易争的规则</span></a>
+    <button class="feature" data-act="rec-home">
+      <span class="fan" aria-hidden="true"><img src="/img/tarot/tarotback.webp" alt=""><img src="/img/tarot/tarot_04.webp" alt=""><img src="/img/tarot/tarot_01.webp" alt=""></span>
+      <b>推荐卡组</b><span>${DECKS.length} 套有出处的卡组，按女神挑一套直接用</span></button>
+    <button data-act="go" data-to="oppo"><i class="ico" aria-hidden="true">对</i><b>对手速查</b><span>只看对手那 22 张牌</span></button>
+    <button data-act="go" data-to="decks"><i class="ico" aria-hidden="true">牌</i><b>我的卡组</b><span>${ui.decks.length ? `已存 ${ui.decks.length} 副` : '存好的牌组都在这'}</span></button>
+    <a href="/guide.html"><i class="ico" aria-hidden="true">教</i><b>规则教程</b><span>新手 10 分钟看懂</span></a>
+    <a href="/guide.html#faq"><i class="ico" aria-hidden="true">问</i><b>常见问题</b><span>线下容易争的规则</span></a>
   </nav>
   <section class="card">
     <h2>我有的盒子</h2>
