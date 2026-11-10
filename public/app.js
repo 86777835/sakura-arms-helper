@@ -110,15 +110,15 @@ function home() {
   const name = (k) => MEGAMI.find((m) => m.key === k).name;
   return `<section class="hero">
     <div class="petals" aria-hidden="true">${PETALS}</div>
+    <a class="back-nav" href="https://boardgame.leisurecat.cloud">‹ 全部游戏</a>
     <a class="rate-nav" href="https://boardgame.leisurecat.cloud/?rate=sakura-arms&back=${encodeURIComponent(location.href)}">★ 写评价</a>
-    <div class="hero-art" aria-hidden="true">
-      <img class="girl back" src="/img/megami/${HERO[1]}.webp" alt="">
-      <img class="girl front" src="/img/megami/${HERO[0]}.webp" alt="">
-    </div>
     <div class="hero-title">
       <p class="kicker">桜降る代に決闘を・新幕</p>
-      <h1>散樱乱武</h1>
-      <span class="seal">组牌<br>助手</span>
+      <h1>散樱乱武<span class="seal">组牌<br>助手</span></h1>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <img class="girl left" src="/img/megami/${HERO[0]}.webp" alt="">
+      <img class="girl right" src="/img/megami/${HERO[1]}.webp" alt="">
     </div>
     <p class="hero-who">今日立绘：${esc(name(HERO[0]))}、${esc(name(HERO[1]))}</p>
   </section>
