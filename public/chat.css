@@ -22,3 +22,10 @@
 .cdots b:nth-child(2){animation-delay:.2s}.cdots b:nth-child(3){animation-delay:.4s}
 @keyframes cd{50%{opacity:.25}}
 @media (prefers-reduced-motion:reduce){.cdots b{animation:none}}
+/* 联网查找：标签、来源、等待提示 */
+.cweb{margin:-2px 0 6px;padding:5px 8px;border-radius:7px;background:#fff0c9;font:500 12px/1.5 var(--sans);color:var(--ink)}
+.cweb b{color:var(--beni)}
+.csrc{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font:12px/1.5 var(--sans);color:var(--muted)}
+.csrc a{display:block;color:var(--plum2);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csrc i{margin-left:6px;font-style:normal;color:var(--muted);opacity:.8}
+.cwait{display:block;margin-bottom:4px;font:500 12.5px var(--sans);color:var(--muted)}

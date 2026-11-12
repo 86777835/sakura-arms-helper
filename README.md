@@ -41,11 +41,19 @@
 - `public/setup.js`：开局清单。通用 7 步，以及 18 柱女神各自的额外组件，每条标出处。
 - `public/data.js`：由 `tools/build_data.mjs` 生成，不要手改。
 - `public/guide.html`：由 `tools/build_pages.mjs` 从 `tools/讲解稿.md`（14 节）和 `tools/faq.json`（43 条）生成。
-- `src/worker.js`、`src/chat.js`、`src/sse.js`：规则助手，和方舟站同一套。
+- `src/worker.js`、`src/chat.js`、`src/sse.js`：规则助手。
   - 只依据讲解稿和常见问题回答。
   - 模型顺序 Flash → Qwen → Pro，每级 9 秒内要开始回答，中途停 8 秒就换下一个。
   - 读取匹兹堡站 KV 里的 DeepSeek 状态，不建 cron。
   - 不显示模型名。
+  - 提示词里附一张本站 267 张卡的中日卡名对照，并标出中文版之后改过的卡（「改于 S?」）。
+- **联网查找**（2026-11-12，照匹兹堡试点移植）：
+  - 讲解稿和常见问题里没有答案时，模型只回一行「【需联网】日文搜索词 | 英文搜索词」。
+  - 服务器调 DeepSeek 搜索接口（`/v1/tools/search`）：散樱的资料主要在日文社区，所以先搜日文（以「桜降る代に決闘を」开头，卡名用日文名），不足 3 条再用英文（以「Sakura Arms」开头）搜全网。合并去重，最多 6 条。
+  - 再让模型只依据搜到的摘要作答，用 [1] [2] 标出处。卡牌效果以新幕最终版 S10-2 为准，摘要说的是旧卡面或「再演」时要指出来；结论只写摘要直接支持的内容。
+  - 页面在这类回答上方固定显示「本站资料没有这一条，以下来自网上讨论，本站未核对」，下面列来源链接；搜不到或搜索失败就照实说，不编。
+  - 服务器只按整行转发模型输出，模型先解释、最后才要求联网时也能接住。
+  - 每次联网在日志里记一条 `chat web search`（搜索词和结果条数），用来核对后补进常见问题。
 - `public/img/`：官方素材包「新幕ふるよにコモンズ」的卡图和塔罗牌，已缩小并转成 WebP。来源和条款见 `docs/素材来源.md`。
 - 评价卡：首页底部，提交到总入口 `/api/reviews`，game 为 `sakura-arms`。room 用这台设备的随机码（单机站没有房间）。总入口已加上 `sakura-arms`（2026-11-07）。
 - `wrangler.jsonc`：rate limit `namespace_id` 用 1131，KV 绑定匹兹堡站的命名空间（只读），route 为 `sakura.leisurecat.cloud`（custom domain），没有 cron。
@@ -69,6 +77,15 @@ rm node_modules
 - `test_rec`：推荐卡组数据合法、有出处、没有自编指标；筛选、展开、导入构筑、存卡组、构筑页入口、窄屏。
 - `test_chat_ui`：没有密钥时给出明确报错，不显示模型名。
 
+联网查找另有一组测试（假 DeepSeek，不调真实模型），要另起一个带假密钥的 wrangler dev：
+
+```sh
+wrangler dev --port 8932 --var DEEPSEEK_API_KEY:fake --var DEEPSEEK_BASE:http://127.0.0.1:8791 --var CHAT_CF_MODEL:@cf/none/missing
+node tests/test_chat_web.mjs   # 12 项：能答不联网、标记拆块、先日文后英文、没搜到、搜索出错、无关问题、先解释后联网、历史不带标签、备用模型切换；中途会等 1 分钟避开限流
+```
+
+假 DeepSeek 用 8791 端口（匹兹堡的测试用 8790，避免两站同时测时撞端口）。
+
 说明：
 - 评价接口全部拦截，不往线上写数据。
 - 浏览器用 playwright-core 加本机 Chrome。
@@ -81,7 +98,7 @@ rm node_modules
 - 『第二章』细音、『旅艺人』常世在 S9 被整个重做，最终版要用到中文版没有的「合奏」等卡，选女神时会提示。
 - 三拾一捨：官方规章没写登记的 3 柱能不能有同一位女神，本工具要求各不相同，页面上写明了这是工具自己的限制。
 - 新幕最终禁止状态按 2026-03 的改定处理，之后没有找到新的改定。
-- 规则助手的流式回答和模型切换逻辑与方舟站相同，本站只测了没有密钥时的报错。
+- 规则助手的模型切换和联网查找有本地模拟测试（`test_chat_web`）；真实模型在 2026-11-12 用 `wrangler dev --remote` 和线上各实问过两题（一题能答、一题联网）。
 - 没在微信真机测过，只测了 Chrome 手机视口（390px、320px）。
 - DeepSeek 密钥由用户自己设置：`wrangler secret put DEEPSEEK_API_KEY --name sakura-arms-helper`。
 
