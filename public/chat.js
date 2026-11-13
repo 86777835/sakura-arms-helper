@@ -31,6 +31,8 @@ $c('.cx').onclick = () => open(false);
 $c('.csug').onclick = e => { const b = e.target.closest('button'); if (b) ask(b.textContent); };
 form.onsubmit = e => { e.preventDefault(); ask(box.value); };
 box.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(box.value); } };
+// Other pages (the teach page) open the panel and ask a question in one tap.
+window.askRules = q => { open(true); ask(q); };
 
 // One message row; assistant rows carry the avatar. Returns the bubble.
 function bubble(cls, html) {

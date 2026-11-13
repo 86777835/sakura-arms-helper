@@ -266,3 +266,69 @@ body.has-chat .dock{padding-right:96px}
 .card h2::before{content:"❀";color:var(--beni2);font-size:15px;margin-right:6px;vertical-align:1px}
 .bar{background:rgba(251,240,243,.94)}
 .bar h1::after{content:" ❀";color:var(--beni2);font-size:13px;vertical-align:2px}
+
+/* 首页：讲规则入口 */
+.teachgo{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border:1px solid var(--sakura);border-radius:14px;
+  background:linear-gradient(160deg,#fff 0%,#fdeef2 100%);color:var(--muted);font-size:12.5px;line-height:1.5;text-align:left;text-decoration:none}
+.teachgo .tg-i{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--beni);color:#fff;font:900 19px var(--serif)}
+.teachgo>span:nth-child(2){flex:1}
+.teachgo b{display:block;font:900 16px var(--serif);letter-spacing:1px;color:var(--beni)}
+.teachgo i{font:600 22px var(--sans);font-style:normal;color:var(--beni)}
+
+/* 讲规则页 */
+.teach{padding:0 16px}
+.teach .tlead{margin:14px 2px 8px;font-size:14px;line-height:1.7;color:var(--muted)}
+.teach .tlead b{color:var(--plum2);text-decoration:underline dotted;text-underline-offset:3px}
+.tnav{position:sticky;top:61px;z-index:5;display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:8px 16px;background:rgba(251,240,243,.95);backdrop-filter:blur(6px);scrollbar-width:none}
+.tnav::-webkit-scrollbar{display:none}
+.tnav a{flex:none;display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:14px;border:1px solid var(--sakura);background:#fff;color:var(--plum2);font-size:13px;font-weight:600;text-decoration:none}
+.tnav a i{font-style:normal;color:var(--beni)}
+.tpart{margin-top:12px;padding:4px 14px 14px;border:1px solid var(--line);border-radius:16px;background:var(--card);scroll-margin-top:110px}
+.tpart h2{display:flex;align-items:baseline;justify-content:space-between;margin:12px 0 4px;font-size:19px;color:var(--plum)}
+.tpart h2 i{font-style:normal;color:var(--beni);margin-right:8px}
+.tpart h2 small{display:inline;font:500 12px var(--sans)}
+.tline{margin-top:9px;font-size:17px;line-height:1.85;color:var(--ink)}
+.tline b{color:var(--beni)}
+.term{display:inline;min-height:0;padding:0 2px;margin:0 1px;border:0;border-radius:0;background:none;font:inherit;color:var(--plum2);font-weight:700;
+  text-decoration:underline dotted 1.5px;text-underline-offset:4px;cursor:pointer}
+img.ico{display:inline-block;object-fit:contain;border-radius:3px}
+.term .ico,.tlab .ico{height:1.35em;width:auto;max-width:2.8em;vertical-align:-.3em;margin-right:3px}
+.tasks{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.tasks em{width:100%;font-size:12px;font-style:normal;font-weight:600;color:var(--muted)}
+.tq{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:5px 12px;border-radius:17px;border:1px solid var(--sakura);background:var(--blush);
+  color:var(--beni);font-size:13.5px;font-weight:700;line-height:1.4;text-align:left;justify-content:flex-start}
+.tq>span{color:var(--ink);font-weight:500}
+.tnote{margin-top:6px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.tnotes{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.tni{border:1px solid var(--line);border-radius:12px;background:#fff}
+.tni summary{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 12px;font-size:15px;font-weight:700;line-height:1.45;cursor:pointer;list-style:none}
+.tni summary::-webkit-details-marker{display:none}
+.tni summary::after{content:"＋";margin-left:auto;font-weight:500;color:var(--beni)}
+.tni[open] summary::after{content:"－"}
+.tni summary i{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--beni);color:#fff;font-size:12px;font-style:normal}
+.tni p{margin:0 12px;font-size:15.5px;line-height:1.8}
+.tni .tq{margin:8px 12px 12px;font-size:12.5px;min-height:30px}
+.tgo{display:flex;align-items:center;justify-content:center;margin-top:16px;text-decoration:none}
+.ticons{display:flex;align-items:baseline;justify-content:space-between;margin:22px 0 4px;font-size:19px;color:var(--plum)}
+.ticons small{display:inline;font:500 12px var(--sans)}
+.tgrid{margin-top:10px;padding:10px 12px 12px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.tgrid h3{margin:0;font:900 14px var(--serif);color:var(--plum2)}
+.tgrid>div{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:6px;margin-top:8px}
+.tic{flex-direction:column;gap:4px;min-height:0;padding:8px 2px 7px;border-radius:10px;font-size:12px;line-height:1.3}
+.tic .ico{height:46px;width:auto;max-width:70px}
+.teach .credits{margin:18px 0 0}
+.tsheet{position:fixed;inset:0;z-index:60}
+.tsheet.hidden{display:none}
+.tsbg{position:absolute;inset:0;background:rgba(30,12,20,.5)}
+.tsbox{position:absolute;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;padding:16px 16px calc(env(safe-area-inset-bottom) + 16px);
+  border-radius:18px 18px 0 0;background:var(--paper);border-top:3px solid var(--beni2);box-shadow:0 -8px 24px rgba(0,0,0,.25);animation:tsup .2s ease-out}
+@keyframes tsup{from{transform:translateY(30px)}}
+@media (prefers-reduced-motion:reduce){.tsbox{animation:none}}
+.tshd{display:flex;align-items:center;gap:12px}
+.tshd b{flex:1;font:900 20px var(--serif);color:var(--plum)}
+.ico.big{height:76px;width:auto;max-width:130px;flex:none}
+.tsx{width:36px;min-height:36px;padding:0;border:0;border-radius:50%;background:rgba(90,43,64,.1);font-size:20px;color:var(--plum2)}
+.tsbox p{margin-top:10px;font-size:15px;line-height:1.7}
+.tsbox p em{display:block;font-size:12px;font-style:normal;font-weight:600;color:var(--beni);letter-spacing:1px}
+.tsask{margin-top:14px}
+.teach-page .bar .back{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-decoration:none}

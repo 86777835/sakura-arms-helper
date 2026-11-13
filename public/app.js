@@ -126,6 +126,7 @@ function home() {
     <p class="lead">新幕中文版 18 柱女神。选两位女神，从 22 张里组出 7+3，开打前看看对手的牌。</p>
     <button class="primary big" data-act="start">${has ? '重新组一副' : '开始组牌'}</button>
     ${has ? `<button class="ghost wide" data-act="resume">继续上次：${ui.mine.length === 2 ? esc(ui.mine.map(label).join(' + ')) : '还在选女神'}</button>` : ''}
+    <a class="teachgo" href="/teach"><span class="tg-i">讲</span><span><b>第一次玩？4 分钟讲规则</b>照着念就能开局，不懂的词点一下</span><i>›</i></a>
   </section>
   <nav class="tiles">
     <button class="feature" data-act="rec-home">
